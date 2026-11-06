@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172f2c">
+  <title>よりみちラジオ — AI Radio</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="よりみちラジオ ホーム"><span class="brand-mark">y<span>r</span></span><span>よりみちラジオ<small>YOUR PERSONAL AI RADIO</small></span></a>
+    <div class="sidebar-caption">MY STATION</div>
+    <nav aria-label="メインメニュー">
+      <a class="nav-item active" href="#station"><span>◉</span> ラジオを聴く</a>
+      <a class="nav-item" href="#library"><span>♫</span> マイライブラリ <b id="nav-count">0</b></a>
+      <button class="nav-item" id="settings-open"><span>⚙</span> ラジオの設定</button>
+    </nav>
+    <div class="sidebar-note"><span class="note-icon">✦</span><p>好きな曲のあいだに、<br>ちょうどいいおしゃべり。</p><small>音楽も、声も。<br>あなたのペースで。</small></div>
+    <div class="connections">
+      <div class="connection"><span class="status-dot" id="voice-dot"></span><span id="voice-status">音声を確認中</span></div>
+      <div class="connection"><span class="status-dot" id="llm-dot"></span><span id="llm-status">定型トークモード</span></div>
+      <button class="text-link" id="connection-refresh">接続を再確認 ↻</button>
+    </div>
+    <div class="sidebar-footer">LOCAL FIRST · NO PAID API</div>
+  </aside>
+
+  <main id="station">
+    <header class="page-header"><div><p class="eyebrow">A LITTLE MUSIC, A LITTLE COMPANY.</p><h1>今日は、どんな音で過ごそう。</h1><p class="page-description">お気に入りの音楽と、小さなおしゃべりを交互に。</p></div><div class="date-label"><span id="date-label"></span><strong id="clock-label"></strong></div></header>
+
+    <section class="player-card" aria-labelledby="now-title">
+      <div class="player-art" aria-hidden="true"><div class="art-grid"></div><div class="vinyl" id="vinyl"><div class="vinyl-label"><span>YORIMICHI</span><b>y<span>r</span></b><small>PERSONAL RADIO</small></div></div><div class="art-caption"><span class="tiny-dot"></span> YOUR OWN SOUNDTRACK</div></div>
+      <div class="player-content">
+        <div class="player-topline"><span class="on-air" id="on-air"><i></i> READY TO PLAY</span><span class="source-tag" id="source-tag">MY STATION</span></div>
+        <p class="track-kicker" id="track-kicker">NOW PLAYING</p>
+        <h2 id="now-title">あなたの選曲で、はじめよう。</h2>
+        <p class="now-artist" id="now-artist">音楽ファイルを追加して、再生ボタンを押してください。</p>
+        <div class="activity-line" id="activity-line" aria-live="polite">音楽 → トーク → 音楽。あとはラジオにおまかせ。</div>
+        <div class="progress-wrap"><input type="range" id="seek" class="seek" min="0" max="1000" value="0" aria-label="曲の再生位置" disabled><div class="time-row"><span id="elapsed">0:00</span><span id="duration">0:00</span></div></div>
+        <div class="player-controls"><button class="icon-button shuffle-button" id="shuffle" title="シャッフル" aria-label="シャッフル" aria-pressed="true">⇄</button><button class="play-button" id="play" aria-label="再生"><span id="play-icon">▶</span><span id="play-label">再生する</span></button><button class="icon-button" id="next" title="次の曲へ" aria-label="次の曲へ">▸▸</button><button class="icon-button stop-button" id="stop" title="停止" aria-label="停止">■</button><label class="volume-control"><span aria-hidden="true">♫</span><input type="range" id="volume" min="0" max="100" value="80" aria-label="音楽の音量"></label></div>
+        <div class="up-next"><span>UP NEXT</span><span id="next-title">曲を追加すると、ここに次の曲が表示されます。</span></div>
+      </div>
+    </section>
+
+    <section class="youtube-panel" id="youtube-panel" hidden><div class="section-heading"><div><p class="eyebrow">YOUTUBE PLAYER</p><h2>YouTube</h2></div><span class="beta-tag">ベータ</span></div><div id="youtube-player"></div><p class="muted">YouTube再生時はこのプレーヤーを表示します。広告や動画ごとの再生制限はYouTubeに従います。画面を閉じて聴く場合はMP3をご利用ください。</p><button class="button secondary" id="youtube-resume" hidden>YouTubeの再生を再開</button></section>
+
+    <div class="workspace-grid">
+      <section class="library-card" id="library" aria-labelledby="library-title">
+        <div class="section-heading"><div><p class="eyebrow">YOUR MUSIC, YOUR CHOICE</p><h2 id="library-title">マイライブラリ <span id="track-count" class="count-badge">0</span></h2></div><button class="button small" id="add-files">＋ 曲を追加</button></div>
+        <div class="library-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input type="search" id="search" placeholder="曲名・アーティストを検索" aria-label="ライブラリを検索"></label><button class="subtle-button" id="add-folder">フォルダ</button><button class="subtle-button" id="youtube-open">YouTube</button><button class="subtle-button danger-text" id="clear-library" title="曲一覧を空にする">クリア</button></div>
+        <div id="drop-zone" class="drop-zone"><div class="empty-art" aria-hidden="true">♫</div><h3>好きな音楽を、ここへ。</h3><p>MP3などの音楽ファイルをドロップ<br>または「曲を追加」から選択してください。</p><small>MP3 / WAV / OGG / M4A / FLAC</small><button class="button secondary demo-button" id="add-demo">デモ曲で試す</button></div>
+        <div class="track-list" id="track-list" role="list" aria-label="曲一覧"></div>
+        <div class="library-footer"><span id="library-summary">0曲 · あなたの選曲を待っています</span><span>音楽はあなたが選ぶ。</span></div>
+      </section>
+
+      <section class="talk-card" aria-labelledby="talk-title"><div class="section-heading"><div><p class="eyebrow">A VOICE BETWEEN SONGS</p><h2 id="talk-title">DJのおしゃべり</h2></div><span class="speech-bubble" aria-hidden="true">✦</span></div><p class="talk-intro">天気、ニュース、曲のこと。<br>一曲ごとに、ちょっとひと息。</p><div class="topic-chips" aria-label="トークの種類"><button data-preview="weather">☀ 天気</button><button data-preview="news">◷ ニュース</button><button data-preview="music">♫ 曲紹介</button><button data-preview="chat">✦ 雑談</button></div><div class="transcript" id="transcript"><div class="transcript-label"><span id="talk-category">STANDBY</span><span id="talk-engine">あなたのDJ</span></div><p id="talk-text">ここにトークの台本が表示されます。曲の再生中に、次のおしゃべりを準備します。</p><div class="talk-sources" id="talk-sources"></div></div><button class="button preview-button" id="preview-talk">▷ トークを試聴する</button><div id="speech-notice" class="info-note" hidden></div><details class="history-details"><summary>最近のおしゃべり <span id="history-count">0</span></summary><ol id="talk-history"></ol></details></section>
+    </div>
+
+    <footer class="main-footer"><span>よりみちラジオ <span id="version"></span> · あなただけの、小さな放送局。</span><span>音声：<a href="https://voicevox.hiroshiba.jp/" target="_blank" rel="noopener noreferrer" id="voice-credit">VOICEVOX：ずんだもん</a> / ブラウザ音声 · 天気：<a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a></span></footer>
+  </main>
+
+  <input type="file" id="file-input" accept=".mp3,.wav,.ogg,.m4a,.flac,.aac,audio/*" multiple hidden>
+  <audio id="music-audio" preload="metadata"></audio><audio id="talk-audio" preload="auto"></audio>
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <dialog id="settings-dialog" class="dialog settings-dialog"><form id="settings-form"><div class="dialog-header"><div><p class="eyebrow">MAKE IT YOURS</p><h2>ラジオの設定</h2></div><button class="dialog-close" type="button" data-close="settings-dialog" aria-label="閉じる">×</button></div><div class="dialog-body"><div class="form-section"><h3>街と、おしゃべりの長さ</h3><div class="form-grid"><label>地域<select id="city-preset"><option value="custom">自分で指定</option><option value="東京|35.68|139.69">東京</option><option value="大阪|34.69|135.50">大阪</option><option value="名古屋|35.18|136.91">名古屋</option><option value="札幌|43.06|141.35">札幌</option><option value="仙台|38.27|140.87">仙台</option><option value="福岡|33.59|130.40">福岡</option><option value="那覇|26.21|127.68">那覇</option></select></label><label>トークの長さ（LLM使用時の目安）<select name="talk_seconds"><option value="15">短め · 約15秒</option><option value="30">ふつう · 約30秒</option><option value="45">ゆったり · 約45秒</option><option value="60">長め · 約60秒</option></select></label><p class="form-help full">定型トークやニュースは、内容により長さが変わります。</p><label>地域名<input name="city" maxlength="80" required></label><label>タイムゾーン<input name="timezone" value="Asia/Tokyo" required></label><label>緯度<input name="latitude" type="number" min="-90" max="90" step="any" required></label><label>経度<input name="longitude" type="number" min="-180" max="180" step="any" required></label></div></div><div class="form-section"><h3>トークの割合</h3><p class="form-help">数字が大きい話題ほど登場します。0にすると、その話題を選びません。同じ話題の繰り返しは抑えます。</p><div class="weights-grid"><label>☀ 天気<input name="weight_weather" type="number" min="0" max="100" required></label><label>◷ ニュース<input name="weight_news" type="number" min="0" max="100" required></label><label>♫ 曲紹介<input name="weight_music" type="number" min="0" max="100" required></label><label>✦ 雑談<input name="weight_chat" type="number" min="0" max="100" required></label></div><label>ニュースRSS / AtomのURL（1行に1つ、最大5件）<textarea name="news_feeds" rows="3" placeholder="https://example.com/feed.xml"></textarea></label><p class="form-help">利用できる配信元を指定してください。未設定の場合、ニュースの代わりに別の話題を話します。</p></div><div class="form-section"><h3>読み上げの声</h3><div class="form-grid"><label class="full">VOICEVOX接続先<input name="voicevox_url" type="url" placeholder="http://127.0.0.1:50021" required></label><label class="full">VOICEVOXの話者<select name="speaker_id" id="speaker-select"><option value="3">ずんだもん · ノーマル（ID: 3）</option></select></label><label>読み上げの速さ<input name="speech_rate" type="number" min="0.6" max="1.8" step="0.01" required></label><label>音楽の音量（%）<input name="music_volume" type="number" min="0" max="100" required></label><label>トークの音量（%）<input name="talk_volume" type="number" min="0" max="100" required></label><label class="full">ブラウザ読み上げの声<select name="browser_voice" id="browser-voice"><option value="">日本語の声を自動選択</option></select></label></div><p class="form-help">VOICEVOX未接続時は、ブラウザの日本語読み上げを使います。日本語の声がない場合は、OSに日本語音声を追加するかVOICEVOXを起動してください。</p></div><div class="form-section"><div class="toggle-heading"><h3>ローカルLLM</h3><label class="toggle-label"><input type="checkbox" name="llm_enabled"> Ollamaでトークを生成する</label></div><div class="form-grid"><label class="full">Ollama接続先<input name="ollama_url" type="url" placeholder="http://127.0.0.1:11434" required></label><label class="full">モデル名<input name="ollama_model" list="model-list" placeholder="インストールしたモデル名"><datalist id="model-list"></datalist></label><label class="full">DJの話し方<textarea name="persona" rows="2" maxlength="500" placeholder="落ち着いた親しみやすいDJ"></textarea></label></div><p class="form-help">オフなら定型トークで動作します。ローカルLLMの生成に失敗した場合も定型トークに切り替わります。</p></div></div><div class="dialog-actions"><span id="settings-message" role="status"></span><button type="button" class="button secondary" data-close="settings-dialog">キャンセル</button><button type="submit" class="button">設定を保存</button></div></form></dialog>
+
+  <dialog id="folder-dialog" class="dialog"><form id="folder-form"><div class="dialog-header"><h2>フォルダから曲を追加</h2><button type="button" class="dialog-close" data-close="folder-dialog" aria-label="閉じる">×</button></div><div class="dialog-body"><label>音楽フォルダのパス<input name="path" id="folder-path" placeholder="C:\Music" required></label><button type="button" class="button secondary" id="pick-folder">フォルダを選択…</button><p class="form-help">フォルダ内の音楽ファイルを登録します。元のファイルは移動しません。</p><p id="folder-message" class="form-help" role="status"></p></div><div class="dialog-actions"><button type="submit" class="button">追加する</button></div></form></dialog>
+
+  <dialog id="youtube-dialog" class="dialog"><form id="youtube-form"><div class="dialog-header"><h2>YouTubeから追加 <span class="beta-tag">ベータ</span></h2><button type="button" class="dialog-close" data-close="youtube-dialog" aria-label="閉じる">×</button></div><div class="dialog-body"><label>動画または再生リストのURL<input name="url" type="url" id="youtube-url" placeholder="https://www.youtube.com/playlist?list=…" required></label><p class="form-help">公開・限定公開の再生リストに対応します。非公開、年齢制限、埋め込み禁止の動画は再生できない場合があります。</p><p class="form-help">公式プレーヤーから取得できた曲を追加します。大きな再生リストでは全曲を取得できない場合があります。</p><p class="form-help">YouTubeの公式プレーヤーを表示して再生します。YouTube再生中に画面を非表示にすると、一時停止します。</p><p id="youtube-message" class="form-help" role="status"></p></div><div class="dialog-actions"><button type="submit" class="button" id="youtube-submit">追加する</button></div></form></dialog>
+
+  <dialog id="edit-dialog" class="dialog"><form id="edit-form"><div class="dialog-header"><h2>曲の情報</h2><button type="button" class="dialog-close" data-close="edit-dialog" aria-label="閉じる">×</button></div><div class="dialog-body"><input name="id" type="hidden"><label>曲名<input name="title" maxlength="240" required></label><label>アーティスト<input name="artist" maxlength="200"></label><label>雰囲気のタグ<input name="tags" maxlength="300" placeholder="爽やか, 夜向け, お気に入り"></label><label>DJに伝えたいこと<textarea name="comment" rows="3" maxlength="1000" placeholder="例：通勤中によく聴く曲。落ち込んだ日に元気をもらえる。"></textarea></label><p class="form-help">タグやメモを曲紹介の材料にします。音を解析していないため、曲を聴いたような感想は生成しません。</p><p id="edit-message" class="form-help" role="status"></p></div><div class="dialog-actions"><button class="button" type="submit">保存する</button></div></form></dialog>
+</body>
+</html>

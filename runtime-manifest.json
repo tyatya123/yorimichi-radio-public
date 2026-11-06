@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "app_version": "0.2.2",
+  "python": {
+    "version": "3.14.10",
+    "url": "https://www.python.org/ftp/python/3.14.10/python-3.14.10-embed-amd64.zip",
+    "sha256": "90905e64a840557d8c1bc4f5b74db3d7ee85e3ffb217611cac1c7813acea4159",
+    "archive": "python-3.14.10-embed-amd64.zip",
+    "destination": "runtime/python",
+    "python_path_file": "python314._pth"
+  },
+  "extractor": {
+    "version": "26.05",
+    "url": "https://github.com/ip7z/7zip/releases/download/26.05/7zr.exe",
+    "sha256": "9bf582b894dfa665f852d7e9112b02290a1c303c2d95a21fcdc41ffcb03143b7",
+    "file": "7zr.exe"
+  },
+  "voicevox": {
+    "version": "0.26.1",
+    "url": "https://github.com/VOICEVOX/voicevox_engine/releases/download/0.26.1/voicevox_engine-windows-cpu-0.26.1.7z.001",
+    "sha256": "2143ab794bf7241b1f88704f88bf4fb10ea6cf453035f54e1b3a73aea2c668fc",
+    "archive": "voicevox_engine-windows-cpu-0.26.1.7z.001",
+    "destination": "runtime/voicevox",
+    "executable": "runtime/voicevox/windows-cpu/run.exe"
+  },
+  "ollama": {
+    "version": "0.40.14",
+    "url": "https://github.com/ollama/ollama/releases/download/v0.40.14/ollama-windows-amd64.zip",
+    "sha256": "65d68cade6cf6375f398b518224f8c8a15e062387f38cf477abfc848de7e7e29",
+    "archive": "ollama-windows-amd64.zip",
+    "destination": "runtime/ollama",
+    "executable": "runtime/ollama/ollama.exe"
+  },
+  "model": {
+    "name": "qwen3:4b-instruct",
+    "digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "source": "https://ollama.com/library/qwen3:4b-instruct"
+  },
+  "settings": {
+    "city": "東京",
+    "latitude": 35.6812,
+    "longitude": 139.7671,
+    "timezone": "Asia/Tokyo",
+    "talk_seconds": 30,
+    "topic_weights": {
+      "weather": 10,
+      "news": 20,
+      "music": 15,
+      "chat": 55
+    },
+    "news_feeds": [
+      "https://rss.itmedia.co.jp/rss/2.0/news_bursts.xml"
+    ],
+    "voicevox_url": "http://127.0.0.1:50021",
+    "speaker_id": 14,
+    "speech_rate": 1.02,
+    "browser_voice": "",
+    "llm_enabled": true,
+    "ollama_url": "http://127.0.0.1:11434",
+    "ollama_model": "qwen3:4b-instruct",
+    "persona": "落ち着いた女性のラジオDJ。です・ます調で、親しみのある自然な話し言葉。短い文とほどよい間で穏やかに話す。大げさな感嘆、説教、毎回の自己紹介は避ける。",
+    "shuffle": true,
+    "music_volume": 0.8,
+    "talk_volume": 0.85
+  }
+}

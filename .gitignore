@@ -1,0 +1,11 @@
+/data/
+/runtime/
+/dist/
+/build/
+__pycache__/
+*.py[cod]
+*.log
+*.part
+*.zip
+.env
+.venv/
